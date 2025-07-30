@@ -3,28 +3,15 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Wrench, Users, Award } from "lucide-react";
 import InstagramCarousel from "~/components/instagram-carousel";
+import { getBrands } from "~/functions/getCategories";
 
 export const Route = createFileRoute("/")({
   component: Home,
+  loader: async () => await getBrands(),
 });
 
 function Home() {
-  const brandLogos = [
-    { name: "Factor", logo: "/brands/factor-logo.png" },
-    { name: "Time", logo: "/brands/time-new-logo.jpeg" },
-    { name: "Colnago", logo: "/brands/colnago-logo.png" },
-    { name: "Aurum", logo: "/brands/aurum-logo.webp" },
-    { name: "Shimano", logo: "/brands/shimano.webp" },
-    { name: "SRAM", logo: "/brands/sram.jpeg" },
-    { name: "Campagnolo", logo: "/brands/campagnolo.jpeg" },
-    { name: "Magene", logo: "/brands/magene.png" },
-    { name: "Kask", logo: "/brands/kask.png" },
-    { name: "Continental", logo: "/brands/continental.png" },
-    { name: "Pirelli", logo: "/brands/pirelli.png" },
-    { name: "Repente", logo: "/brands/repente-logo.webp" },
-    { name: "100%", logo: "/brands/100percent-new-logo.webp" },
-    { name: "Koo", logo: "/brands/koo-logo.jpeg" },
-  ];
+  const { brands } = Route.useLoaderData();
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -265,13 +252,13 @@ function Home() {
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8">
-            {brandLogos.map((brand) => (
+            {brands.map((brand) => (
               <div
                 key={brand.name}
                 className="flex items-center justify-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
               >
                 <img
-                  src={brand.logo}
+                  src={brand.imageUrl ?? ""}
                   alt={`${brand.name} logo`}
                   className="max-w-full max-h-12 object-contain"
                 />

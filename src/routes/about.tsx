@@ -1,44 +1,111 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Users, Award, Clock, MapPin, Quote, Star } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { Award, Clock, MapPin, Quote, Star, Users } from "lucide-react";
+import { Suspense } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Link } from "@tanstack/react-router";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { getTestimonials } from "~/functions/getTestimonials";
 
 export const Route = createFileRoute("/about")({
   component: About,
+  loader: async () => await getTestimonials(),
 });
 
-function About() {
-  const testimonials = [
-    {
-      name: "Joel Lidden",
-      rating: 5,
-      text: "When I heard Chris was starting up Velo Tech Centre as a dedicated workshop it was great news. I entrust my bikes only to the very best, and Chris is that. From a maintenance perspective, whenever Chris works on my bikes I walk away both knowing the problem has been resolved and having had the issue identified and explained. For new builds, Chris nails it ... every time. His attention to detail and build finish is exceptional and his pricing for both maintenance and parts is very competitive. Thanks, VeloTech.",
-      service: "Maintenance & Custom Builds",
-    },
-    {
-      name: "Jack",
-      title: "Media Advisor",
-      rating: 5,
-      text: "Velo Tech has the skills, technical knowledge and equipment to make sure my bike runs its best. I am always struck by the variety of work Chris has in his workshop when I'm there. Whether it's building the latest Trek for a client or researching retro parts for a bespoke steel frame project, Chris' knowledge is endless. He is also a great communicator, always telling me exactly what he's done with my bike in fine detail. And even though I don't understand what he means half the time, I really appreciate knowing how much he cares. Thanks Velo Tech!",
-      service: "Technical Service",
-    },
-    {
-      name: "Michael Courtney",
-      title: "Portfolio Manager",
-      rating: 5,
-      text: "Is Chris the best bike mechanic in Sydney? Probably. Chris has built and serviced 4 bikes for me over the years. Great attention to detail and fantastic customer service. He also offers considered and thoughtful advice on new equipment purchases. Also a top bloke.",
-      service: "Multiple Builds & Service",
-    },
-    {
-      name: "Sianne Bennett",
-      rating: 5,
-      text: "Velo Tech Centre is the only business I trust with my bikes. The quality of the work Chris does and the care he has is outstanding. I've gone to Chris with a range of bikes and different scenarios and he gets them running perfectly every time. I don't think about taking my bikes to anyone else.",
-      service: "Complete Bike Care",
-    },
-  ];
+// Separate component for testimonials that can be wrapped in Suspense
+function TestimonialsSection() {
+  const { testimonials } = Route.useLoaderData();
 
+  return (
+    <div className="mb-16">
+      <h2 className="text-3xl font-bold text-center mb-12 font-display">
+        What Our Customers Say
+      </h2>
+      <div className="grid md:grid-cols-2 gap-8">
+        {testimonials.map((testimonial, index) => (
+          <Card
+            key={index}
+            className="hover:shadow-lg transition-shadow border-gray-700 bg-gray-800"
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-1">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-4 h-4 fill-primary text-primary"
+                    />
+                  ))}
+                </div>
+                <Badge
+                  variant="outline"
+                  className="text-xs border-gray-700 text-gray-400"
+                >
+                  {testimonial.service}
+                </Badge>
+              </div>
+              <Quote className="w-8 h-8 text-gray-400 mb-4" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-400 mb-4 italic leading-relaxed">
+                "{testimonial.content}"
+              </p>
+              <div className="font-semibold text-white">
+                - {testimonial.name}
+                {testimonial.title && (
+                  <span className="text-gray-400 font-normal">
+                    , {testimonial.title}
+                  </span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Loading component for testimonials
+function TestimonialsLoading() {
+  return (
+    <div className="mb-16">
+      <h2 className="text-3xl font-bold text-center mb-12 font-display">
+        What Our Customers Say
+      </h2>
+      <div className="grid md:grid-cols-2 gap-8">
+        {[...Array(4)].map((_, index) => (
+          <Card
+            key={index}
+            className="border-gray-700 bg-gray-800 animate-pulse"
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-4 h-4 bg-gray-600 rounded" />
+                  ))}
+                </div>
+                <div className="w-20 h-4 bg-gray-600 rounded" />
+              </div>
+              <div className="w-8 h-8 bg-gray-600 rounded mb-4" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-600 rounded w-full" />
+                <div className="h-4 bg-gray-600 rounded w-3/4" />
+                <div className="h-4 bg-gray-600 rounded w-1/2" />
+              </div>
+              <div className="mt-4 h-4 bg-gray-600 rounded w-1/3" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function About() {
   const stats = [
     { icon: Users, number: "500+", label: "Happy Customers" },
     { icon: Award, number: "10+", label: "Years Experience" },
@@ -158,53 +225,10 @@ function About() {
           </div>
         </div>
 
-        {/* Testimonials */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12 font-display">
-            What Our Customers Say
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card
-                key={index}
-                className="hover:shadow-lg transition-shadow border-gray-700 bg-gray-800"
-              >
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-1">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 fill-primary text-primary"
-                        />
-                      ))}
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className="text-xs border-gray-700 text-gray-400"
-                    >
-                      {testimonial.service}
-                    </Badge>
-                  </div>
-                  <Quote className="w-8 h-8 text-gray-400 mb-4" />
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-400 mb-4 italic leading-relaxed">
-                    "{testimonial.text}"
-                  </p>
-                  <div className="font-semibold text-white">
-                    - {testimonial.name}
-                    {testimonial.title && (
-                      <span className="text-gray-400 font-normal">
-                        , {testimonial.title}
-                      </span>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+        {/* Testimonials with Suspense */}
+        <Suspense fallback={<TestimonialsLoading />}>
+          <TestimonialsSection />
+        </Suspense>
 
         {/* Values/Mission */}
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-8 mb-16 border border-gray-700">
