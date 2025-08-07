@@ -6,7 +6,6 @@ import { sampleCategories } from "~/db/samples/category";
 
 export const getCategoriesWithBrands = createServerFn({
   method: "GET",
-  type: "static",
 }).handler(async () => {
   const categories = await db.select().from(category);
 
@@ -26,7 +25,6 @@ export const getCategoriesWithBrands = createServerFn({
 
 export const getBrands = createServerFn({
   method: "GET",
-  type: "static",
 }).handler(async () => {
   const brands = await db.select().from(brand);
 
