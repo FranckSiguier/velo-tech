@@ -27,7 +27,7 @@ function Services() {
     {
       icon: Wrench,
       title: "General Service",
-      price: "$180",
+      price: "$190",
       duration: "2-3 hours",
       description:
         "Comprehensive maintenance to keep your bike running smoothly",
@@ -46,7 +46,7 @@ function Services() {
     {
       icon: Shield,
       title: "Disc Brake General Service",
-      price: "$220",
+      price: "$230",
       duration: "2-4 hours",
       description: "Complete service including disc brake maintenance",
       features: [
