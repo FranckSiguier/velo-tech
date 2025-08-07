@@ -7,7 +7,7 @@ import { getBrands } from "~/functions/getCategories";
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: async () => await getBrands(),
+  loader: async () => getBrands(),
 });
 
 function Home() {

@@ -5,10 +5,10 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { getCategoriesWithBrands } from "~/functions/getCategories";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/products")({
   component: Products,
-  loader: async () => await getCategoriesWithBrands(),
 });
 
 // Loading component for Suspense fallback
@@ -104,13 +104,16 @@ function ProductsLoading() {
 
 // Main products content component
 function ProductsContent() {
-  const { categoriesWithBrands } = Route.useLoaderData();
+  const { data } = useSuspenseQuery({
+    queryKey: ["categoriesWithBrands"],
+    queryFn: () => getCategoriesWithBrands(),
+  });
 
   return (
     <>
       {/* Brands by Category */}
       <div className="mb-16">
-        {categoriesWithBrands.map((category, categoryIndex) => (
+        {data.categoriesWithBrands.map((category, categoryIndex) => (
           <div key={categoryIndex} className="mb-12">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-white font-display mb-2">
@@ -180,7 +183,7 @@ function ProductsContent() {
           Product Categories
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
-          {categoriesWithBrands.map((category, index) => (
+          {data.categoriesWithBrands.map((category, index) => (
             <Card
               key={index}
               className="hover:shadow-lg transition-shadow border-gray-700 bg-gray-800"
@@ -245,9 +248,12 @@ function Products() {
             have what you need to elevate your riding experience.
           </p>
         </div>
+
+        {/* Products Content */}
         <Suspense fallback={<ProductsLoading />}>
           <ProductsContent />
         </Suspense>
+
         {/* Additional Products */}
         <div className="mb-16">
           <Card className="bg-gradient-to-r from-gray-800 to-gray-700 border-gray-600">

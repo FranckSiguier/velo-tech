@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { Award, Clock, MapPin, Quote, Star, Users } from "lucide-react";
 import { Suspense } from "react";
 import { Badge } from "~/components/ui/badge";

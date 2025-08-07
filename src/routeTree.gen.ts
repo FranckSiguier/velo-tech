@@ -12,7 +12,6 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
-import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -25,11 +24,6 @@ const rootServerRouteImport = createServerRootRoute()
 const ThankYouRoute = ThankYouRouteImport.update({
   id: '/thank-you',
   path: '/thank-you',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRoute = ServicesRouteImport.update({
@@ -69,7 +63,6 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/services': typeof ServicesRoute
-  '/signup': typeof SignupRoute
   '/thank-you': typeof ThankYouRoute
 }
 export interface FileRoutesByTo {
@@ -78,7 +71,6 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/services': typeof ServicesRoute
-  '/signup': typeof SignupRoute
   '/thank-you': typeof ThankYouRoute
 }
 export interface FileRoutesById {
@@ -88,7 +80,6 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/services': typeof ServicesRoute
-  '/signup': typeof SignupRoute
   '/thank-you': typeof ThankYouRoute
 }
 export interface FileRouteTypes {
@@ -99,17 +90,9 @@ export interface FileRouteTypes {
     | '/contact'
     | '/products'
     | '/services'
-    | '/signup'
     | '/thank-you'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/contact'
-    | '/products'
-    | '/services'
-    | '/signup'
-    | '/thank-you'
+  to: '/' | '/about' | '/contact' | '/products' | '/services' | '/thank-you'
   id:
     | '__root__'
     | '/'
@@ -117,7 +100,6 @@ export interface FileRouteTypes {
     | '/contact'
     | '/products'
     | '/services'
-    | '/signup'
     | '/thank-you'
   fileRoutesById: FileRoutesById
 }
@@ -127,7 +109,6 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ProductsRoute: typeof ProductsRoute
   ServicesRoute: typeof ServicesRoute
-  SignupRoute: typeof SignupRoute
   ThankYouRoute: typeof ThankYouRoute
 }
 export interface FileServerRoutesByFullPath {
@@ -159,13 +140,6 @@ declare module '@tanstack/react-router' {
       path: '/thank-you'
       fullPath: '/thank-you'
       preLoaderRoute: typeof ThankYouRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services': {
@@ -223,7 +197,6 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ProductsRoute: ProductsRoute,
   ServicesRoute: ServicesRoute,
-  SignupRoute: SignupRoute,
   ThankYouRoute: ThankYouRoute,
 }
 export const routeTree = rootRouteImport

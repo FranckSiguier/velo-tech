@@ -8,6 +8,7 @@ import Navbar from "~/components/navbar";
 import { NotFound } from "~/components/NotFound";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -53,17 +54,21 @@ export const Route = createRootRoute({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const [queryClient] = React.useState(() => new QueryClient());
+
   return (
     <html>
       <head>
         <HeadContent />
       </head>
       <body>
-        <Navbar />
-        {children}
-        <Footer />
-        <TanStackRouterDevtools position="bottom-right" />
-        <Scripts />
+        <QueryClientProvider client={queryClient}>
+          <Navbar />
+          {children}
+          <Footer />
+          <TanStackRouterDevtools position="bottom-right" />
+          <Scripts />
+        </QueryClientProvider>
       </body>
     </html>
   );

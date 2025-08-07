@@ -124,7 +124,7 @@ export default function Navbar() {
                       <div className="w-10 h-10">
                         <VeloTechLogo />
                       </div>
-                      <span className="font-bold text-white font-display">
+                      <span className="hidden md:block font-bold text-white font-display">
                         Velo Tech Centre
                       </span>
                     </Link>
