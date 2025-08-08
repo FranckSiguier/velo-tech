@@ -104,11 +104,13 @@ function Contact() {
     sendEmail({ data: formFields })
       .then(() => {
         setIsSubmitted(true);
+        setIsSending(false);
         setTimeout(() => {
           navigate({ to: "/thank-you" });
         }, 3000);
       })
       .catch((error) => {
+        setIsSending(false);
         throw error;
       });
   };
