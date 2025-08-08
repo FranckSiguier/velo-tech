@@ -3,6 +3,7 @@ import {
   Clock,
   Facebook,
   Instagram,
+  Loader2,
   Mail,
   MapPin,
   Phone,
@@ -20,13 +21,14 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { sendEmail, SendEmailData } from "~/functions/sendEmail";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
 function Contact() {
-  const [formFields, setFormFields] = useState({
+  const [formFields, setFormFields] = useState<SendEmailData>({
     name: "",
     email: "",
     phone: "",
@@ -43,7 +45,7 @@ function Contact() {
     phone?: NodeJS.Timeout;
   }>({});
   const navigate = useNavigate();
-
+  const [isSending, setIsSending] = useState(false);
   // Cleanup timers on unmount
   useEffect(() => {
     return () => {
@@ -79,7 +81,7 @@ function Contact() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate all fields
@@ -97,11 +99,18 @@ function Contact() {
       return;
     }
 
-    setIsSubmitted(true);
+    setIsSending(true);
 
-    setTimeout(() => {
-      navigate({ to: "/thank-you" });
-    }, 3000);
+    sendEmail({ data: formFields })
+      .then(() => {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          navigate({ to: "/thank-you" });
+        }, 3000);
+      })
+      .catch((error) => {
+        throw error;
+      });
   };
 
   const handleChange = (
@@ -333,10 +342,17 @@ function Contact() {
                     <Button
                       type="submit"
                       size="lg"
+                      disabled={isSending}
                       className="w-full bg-primary hover:bg-primary-400 text-gray-900"
                     >
-                      <Send className="w-4 h-4 mr-2" />
-                      Send Message
+                      {isSending ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4 mr-2" />
+                          Send Message
+                        </>
+                      )}
                     </Button>
                   </form>
                 )}
