@@ -26,7 +26,7 @@ function Services() {
   const services = [
     {
       icon: Wrench,
-      title: "Rim BrakeGeneral Service",
+      title: "Rim Brake General Service",
       price: "$190",
       duration: "2-3 hours",
       description:
