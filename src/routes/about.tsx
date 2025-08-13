@@ -207,7 +207,7 @@ function About() {
               <CardHeader>
                 <img
                   src="/placeholder.svg?height=200&width=200"
-                  alt="Paul - Team Member"
+                  alt="Paul Birtles - Mechanic"
                   className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
                 />
                 <CardTitle className="text-white text-xl font-display">
@@ -215,9 +215,10 @@ function About() {
                 </CardTitle>
                 <p className="text-primary font-semibold">Team Member</p>
                 <p className="text-gray-400">
-                  [Paul's background and expertise will be added here. He brings
-                  valuable skills and experience to our team, helping us provide
-                  the best possible service to our customers.]
+                  Bike Tech at Velo Tech Centre since early 2021 and UCI level 2
+                  mechanic. Been apart of the Sydney road cycling community for
+                  over 35 years and have a real passion for all things bikes and
+                  helping others experience the same enjoyment of riding.
                 </p>
               </CardHeader>
             </Card>

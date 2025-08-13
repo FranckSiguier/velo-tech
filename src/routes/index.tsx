@@ -150,7 +150,7 @@ function Home() {
       </section>
 
       {/* Instagram Carousel Section */}
-      <section className="py-16 bg-gray-900">
+      {/* <section className="py-16 bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-white font-display">
@@ -164,7 +164,7 @@ function Home() {
           </div>
           <InstagramCarousel />
         </div>
-      </section>
+      </section> */}
 
       {/* Services Preview */}
       <section className="py-16 bg-gray-800">
