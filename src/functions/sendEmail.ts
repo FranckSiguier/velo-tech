@@ -13,7 +13,7 @@ export type SendEmailData = {
 export const sendEmail = createServerFn({
   method: "POST",
 })
-  .validator(
+  .inputValidator(
     z.object({
       name: z.string().min(1),
       email: z.string().email(),
