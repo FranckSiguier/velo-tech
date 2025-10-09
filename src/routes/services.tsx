@@ -323,8 +323,8 @@ function Services() {
                   <strong>Email:</strong> chris@velotechcentre.com.au
                 </div>
                 <div className="text-sm text-gray-400">
-                  <strong>Hours:</strong> Mon/Wed/Fri: 8:30AM-5PM, Tue/Thu:
-                  7:30AM-6PM, Weekends: Closed
+                  <strong>Hours:</strong> Mon/Wed: 8:30AM-5PM, Tue/Thu:
+                  7:30AM-6PM, Fri: 8:30AM-4PM, Weekends: Closed
                 </div>
               </div>
             </CardContent>
