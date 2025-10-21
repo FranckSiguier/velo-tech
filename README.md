@@ -1,4 +1,4 @@
-# Welcome to TanStack.com!
+# Velo Tech Centre Website
 
 This site is built with TanStack Router!
 
@@ -18,6 +18,37 @@ pnpm dev
 ```
 
 This starts your app in development mode, rebuilding assets on file changes.
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+### Cloudflare Turnstile (Captcha)
+
+The contact form uses Cloudflare Turnstile for spam prevention. Get your keys from the [Cloudflare Dashboard](https://dash.cloudflare.com/).
+
+1. Go to Cloudflare Dashboard > Turnstile
+2. Create a new site
+3. Copy the Site Key and Secret Key
+
+```env
+# Frontend - Site Key (public, safe to expose in client)
+VITE_TURNSTILE_SITE_KEY=your_site_key_here
+
+# Backend - Secret Key (private, keep secret)
+TURNSTILE_SECRET_KEY=your_secret_key_here
+```
+
+**For local development/testing**, you can use Cloudflare's test keys:
+
+- Site Key: `1x00000000000000000000AA` (always passes)
+- Secret Key: `1x0000000000000000000000000000000AA` (always passes)
+
+### Email Configuration
+
+```env
+GOOGLE_APP_PASSWORD=your_google_app_password_here
+```
 
 ## Editing and previewing the docs of TanStack projects locally
 

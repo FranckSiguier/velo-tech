@@ -8,6 +8,7 @@ export type SendEmailData = {
   phone: string;
   service: string;
   message: string;
+  captchaToken: string;
 };
 
 export const sendEmail = createServerFn({
@@ -20,10 +21,32 @@ export const sendEmail = createServerFn({
       phone: z.string().min(1),
       service: z.string().min(1),
       message: z.string().min(1),
+      captchaToken: z.string().min(1, "Captcha token is required"),
     })
   )
   .handler(async ({ data }) => {
-    const { name, email, phone, service, message } = data;
+    const { name, email, phone, service, message, captchaToken } = data;
+
+    // Verify Turnstile token
+    const turnstileResponse = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          secret: process.env.TURNSTILE_SECRET_KEY,
+          response: captchaToken,
+        }),
+      }
+    );
+
+    const turnstileData = await turnstileResponse.json();
+
+    if (!turnstileData.success) {
+      throw new Error("Captcha verification failed");
+    }
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {

@@ -22,13 +22,16 @@ import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { sendEmail, SendEmailData } from "~/functions/sendEmail";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
+type FormFields = Omit<SendEmailData, "captchaToken">;
+
 function Contact() {
-  const [formFields, setFormFields] = useState<SendEmailData>({
+  const [formFields, setFormFields] = useState<FormFields>({
     name: "",
     email: "",
     phone: "",
@@ -38,6 +41,7 @@ function Contact() {
   const [errors, setErrors] = useState<{
     email?: string;
     phone?: string;
+    captcha?: string;
   }>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [debounceTimers, setDebounceTimers] = useState<{
@@ -46,6 +50,7 @@ function Contact() {
   }>({});
   const navigate = useNavigate();
   const [isSending, setIsSending] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string>("");
   // Cleanup timers on unmount
   useEffect(() => {
     return () => {
@@ -85,12 +90,15 @@ function Contact() {
     e.preventDefault();
 
     // Validate all fields
-    const newErrors: { email?: string; phone?: string } = {};
+    const newErrors: { email?: string; phone?: string; captcha?: string } = {};
     const emailError = validateField("email", formFields.email);
     const phoneError = validateField("phone", formFields.phone);
 
     if (emailError) newErrors.email = emailError;
     if (phoneError) newErrors.phone = phoneError;
+    if (!captchaToken) {
+      newErrors.captcha = "Please complete the captcha verification";
+    }
 
     setErrors(newErrors);
 
@@ -101,7 +109,16 @@ function Contact() {
 
     setIsSending(true);
 
-    sendEmail({ data: formFields })
+    sendEmail({
+      data: {
+        name: formFields.name,
+        email: formFields.email,
+        phone: formFields.phone,
+        service: formFields.service,
+        message: formFields.message,
+        captchaToken: captchaToken,
+      },
+    })
       .then(() => {
         setIsSubmitted(true);
         setIsSending(false);
@@ -339,6 +356,42 @@ function Contact() {
                         className="mt-1 border-gray-700 focus:border-primary focus:ring-primary bg-gray-800 text-white"
                         placeholder="Tell us about your bike, the issue you're experiencing, or what service you need..."
                       />
+                    </div>
+
+                    <div>
+                      <Turnstile
+                        siteKey={
+                          import.meta.env.VITE_TURNSTILE_SITE_KEY ||
+                          "1x00000000000000000000AA"
+                        }
+                        onSuccess={(token) => {
+                          setCaptchaToken(token);
+                          setErrors((prev) => ({
+                            ...prev,
+                            captcha: undefined,
+                          }));
+                        }}
+                        onError={() => {
+                          setCaptchaToken("");
+                          setErrors((prev) => ({
+                            ...prev,
+                            captcha:
+                              "Captcha verification failed. Please try again.",
+                          }));
+                        }}
+                        onExpire={() => {
+                          setCaptchaToken("");
+                          setErrors((prev) => ({
+                            ...prev,
+                            captcha: "Captcha expired. Please verify again.",
+                          }));
+                        }}
+                      />
+                      {errors.captcha && (
+                        <p className="text-sm text-red-400 mt-2">
+                          {errors.captcha}
+                        </p>
+                      )}
                     </div>
 
                     <Button
