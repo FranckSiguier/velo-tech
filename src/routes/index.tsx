@@ -9,9 +9,9 @@ import { LatestBuildDisplay } from "~/components/latest-build-display";
 export const Route = createFileRoute("/")({
   component: Home,
   loader: async () => {
-    const brands = await getBrands();
-    const latestBuild = await getLastBlob();
-    return { ...brands, latestBuild };
+    const promises = Promise.all([getBrands(), getLastBlob()]);
+    const [{ brands }, latestBuild] = await promises;
+    return { brands, latestBuild };
   },
 });
 
