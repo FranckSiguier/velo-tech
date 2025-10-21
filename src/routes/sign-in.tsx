@@ -1,6 +1,6 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { CheckCircle, Loader2, LogIn } from "lucide-react";
 import { useState } from "react";
-import { authClient, useSession } from "../utils/auth-client";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -11,7 +11,7 @@ import {
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Loader2, LogIn, CheckCircle } from "lucide-react";
+import { authClient } from "../utils/auth-client";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignIn,
@@ -217,17 +217,6 @@ function SignIn() {
                     </>
                   )}
                 </Button>
-
-                <div className="text-center text-sm text-gray-400 mt-4">
-                  Don't have an account?{" "}
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: "/sign-up" })}
-                    className="text-primary hover:underline"
-                  >
-                    Sign up
-                  </button>
-                </div>
               </form>
             )}
           </CardContent>

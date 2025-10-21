@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
-import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ProductsRouteImport } from './routes/products'
@@ -23,11 +22,6 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 const ThankYouRoute = ThankYouRouteImport.update({
   id: '/thank-you',
   path: '/thank-you',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignUpRoute = SignUpRouteImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignInRoute = SignInRouteImport.update({
@@ -78,7 +72,6 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsRoute
   '/services': typeof ServicesRoute
   '/sign-in': typeof SignInRoute
-  '/sign-up': typeof SignUpRoute
   '/thank-you': typeof ThankYouRoute
   '/admin': typeof AdminIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -90,7 +83,6 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsRoute
   '/services': typeof ServicesRoute
   '/sign-in': typeof SignInRoute
-  '/sign-up': typeof SignUpRoute
   '/thank-you': typeof ThankYouRoute
   '/admin': typeof AdminIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -103,7 +95,6 @@ export interface FileRoutesById {
   '/products': typeof ProductsRoute
   '/services': typeof ServicesRoute
   '/sign-in': typeof SignInRoute
-  '/sign-up': typeof SignUpRoute
   '/thank-you': typeof ThankYouRoute
   '/admin/': typeof AdminIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -117,7 +108,6 @@ export interface FileRouteTypes {
     | '/products'
     | '/services'
     | '/sign-in'
-    | '/sign-up'
     | '/thank-you'
     | '/admin'
     | '/api/auth/$'
@@ -129,7 +119,6 @@ export interface FileRouteTypes {
     | '/products'
     | '/services'
     | '/sign-in'
-    | '/sign-up'
     | '/thank-you'
     | '/admin'
     | '/api/auth/$'
@@ -141,7 +130,6 @@ export interface FileRouteTypes {
     | '/products'
     | '/services'
     | '/sign-in'
-    | '/sign-up'
     | '/thank-you'
     | '/admin/'
     | '/api/auth/$'
@@ -154,7 +142,6 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRoute
   ServicesRoute: typeof ServicesRoute
   SignInRoute: typeof SignInRoute
-  SignUpRoute: typeof SignUpRoute
   ThankYouRoute: typeof ThankYouRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -167,13 +154,6 @@ declare module '@tanstack/react-router' {
       path: '/thank-you'
       fullPath: '/thank-you'
       preLoaderRoute: typeof ThankYouRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sign-up': {
-      id: '/sign-up'
-      path: '/sign-up'
-      fullPath: '/sign-up'
-      preLoaderRoute: typeof SignUpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sign-in': {
@@ -242,7 +222,6 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRoute,
   ServicesRoute: ServicesRoute,
   SignInRoute: SignInRoute,
-  SignUpRoute: SignUpRoute,
   ThankYouRoute: ThankYouRoute,
   AdminIndexRoute: AdminIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

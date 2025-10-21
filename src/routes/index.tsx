@@ -2,16 +2,22 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Wrench, Users, Award } from "lucide-react";
-import InstagramCarousel from "~/components/instagram-carousel";
 import { getBrands } from "~/functions/getCategories";
+import { getLastBlob } from "~/functions/getLastBlob";
+import { LatestBuildDisplay } from "~/components/latest-build-display";
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: async () => await getBrands(),
+  loader: async () => {
+    const brands = await getBrands();
+    const latestBuild = await getLastBlob();
+    return { ...brands, latestBuild };
+  },
 });
 
 function Home() {
-  const { brands } = Route.useLoaderData();
+  const { brands, latestBuild } = Route.useLoaderData();
+  const buildData = latestBuild?.metadata?.metadata || {};
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -19,7 +25,7 @@ function Home() {
       <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-secondary-800 text-white">
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative container mx-auto px-4 py-24 lg:py-32">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 font-display">
               Welcome to{" "}
               <span className="text-primary animate-pulse">
@@ -47,6 +53,25 @@ function Home() {
                 <Link to="/contact">Get In Touch</Link>
               </Button>
             </div>
+
+            {/* Latest Build Showcase */}
+            {latestBuild?.imageData && (
+              <div className="mt-16 mx-auto">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl md:text-3xl font-bold text-white font-display mb-2">
+                    Latest Custom Build
+                  </h2>
+                  <p className="text-gray-400">
+                    Check out our most recent masterpiece
+                  </p>
+                </div>
+                <LatestBuildDisplay
+                  imageData={latestBuild.imageData}
+                  buildData={buildData}
+                  variant="compact"
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>

@@ -1,11 +1,12 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { getUserSession } from "~/functions/auth-server-func";
-import { getLastBlob } from "~/functions/getLastBlob";
-import { uploadBuild } from "~/functions/uploadBuild";
+import { LatestBuildDisplay } from "~/components/latest-build-display";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { getUserSession } from "~/functions/auth-server-func";
+import { getLastBlob } from "~/functions/getLastBlob";
+import { uploadBuild } from "~/functions/uploadBuild";
 import { signOut } from "~/utils/auth-client";
 
 export const Route = createFileRoute("/admin/")({
@@ -212,78 +213,14 @@ function RouteComponent() {
       </div>
 
       {/* Latest Build Display */}
-      {!imageData ? (
-        <p className="text-gray-400">No builds uploaded yet.</p>
-      ) : (
-        <>
-          <h2 className="text-2xl font-bold mb-6 text-white font-display">
-            Latest Build
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Image Section */}
-            <div className="space-y-4">
-              <img
-                src={`data:image/png;base64,${imageData}`}
-                alt="Latest Build"
-                className="max-w-full h-auto rounded-xl shadow-xl border border-gray-700"
-              />
-            </div>
-
-            {/* Metadata Section */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-primary font-display">
-                Build Specifications
-              </h2>
-
-              <div className="space-y-4">
-                {buildData.frame && (
-                  <div className="bg-gradient-to-r from-gray-800 to-secondary-800 p-5 rounded-xl shadow-md border border-gray-700 hover:border-primary/50 transition-colors">
-                    <h3 className="text-xs font-bold text-primary uppercase tracking-wide mb-2">
-                      Frame
-                    </h3>
-                    <p className="text-lg font-semibold text-white">
-                      {buildData.frame}
-                    </p>
-                  </div>
-                )}
-
-                {buildData.groupset && (
-                  <div className="bg-gradient-to-r from-gray-800 to-secondary-800 p-5 rounded-xl shadow-md border border-gray-700 hover:border-primary/50 transition-colors">
-                    <h3 className="text-xs font-bold text-primary uppercase tracking-wide mb-2">
-                      Groupset
-                    </h3>
-                    <p className="text-lg font-semibold text-white">
-                      {buildData.groupset}
-                    </p>
-                  </div>
-                )}
-
-                {buildData.wheels && (
-                  <div className="bg-gradient-to-r from-gray-800 to-secondary-800 p-5 rounded-xl shadow-md border border-gray-700 hover:border-primary/50 transition-colors">
-                    <h3 className="text-xs font-bold text-primary uppercase tracking-wide mb-2">
-                      Wheels
-                    </h3>
-                    <p className="text-lg font-semibold text-white">
-                      {buildData.wheels}
-                    </p>
-                  </div>
-                )}
-
-                {buildData.tyres && (
-                  <div className="bg-gradient-to-r from-gray-800 to-secondary-800 p-5 rounded-xl shadow-md border border-gray-700 hover:border-primary/50 transition-colors">
-                    <h3 className="text-xs font-bold text-primary uppercase tracking-wide mb-2">
-                      Tyres
-                    </h3>
-                    <p className="text-lg font-semibold text-white">
-                      {buildData.tyres}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      <h2 className="text-2xl font-bold mb-6 text-white font-display">
+        Latest Build
+      </h2>
+      <LatestBuildDisplay
+        imageData={imageData}
+        buildData={buildData}
+        variant="full"
+      />
     </div>
   );
 }
