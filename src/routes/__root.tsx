@@ -55,7 +55,22 @@ export const Route = createRootRoute({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const [queryClient] = React.useState(() => new QueryClient());
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            // Global defaults for all queries
+            staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh
+            gcTime: 10 * 60 * 1000, // 10 minutes - cache garbage collection time (formerly cacheTime)
+            refetchOnWindowFocus: false, // Don't refetch when user returns to tab
+            refetchOnMount: false, // Don't refetch when component mounts if data is fresh
+            refetchOnReconnect: false, // Don't refetch when internet reconnects
+            retry: 2, // Retry failed requests twice
+          },
+        },
+      })
+  );
 
   return (
     <html>

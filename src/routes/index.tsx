@@ -1,77 +1,172 @@
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Award, Users, Wrench } from "lucide-react";
+import { Suspense } from "react";
+import { LatestBuildDisplay } from "~/components/latest-build-display";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import { Wrench, Users, Award } from "lucide-react";
 import { getBrands } from "~/functions/getCategories";
 import { getLastBlob } from "~/functions/getLastBlob";
-import { LatestBuildDisplay } from "~/components/latest-build-display";
+
+// Define query options with aggressive caching for rarely-changing data
+const brandsQueryOptions = queryOptions({
+  queryKey: ["brands"],
+  queryFn: async () => {
+    const result = await getBrands();
+    return result.brands;
+  },
+  staleTime: 1000 * 60 * 60, // 1 hour - brands rarely change
+  gcTime: 1000 * 60 * 60 * 24, // 24 hours - keep in cache for a day
+});
+
+const latestBuildQueryOptions = queryOptions({
+  queryKey: ["latestBuild"],
+  queryFn: async () => {
+    return await getLastBlob();
+  },
+  staleTime: 1000 * 60 * 30, // 30 minutes - builds change occasionally
+  gcTime: 1000 * 60 * 60 * 2, // 2 hours - keep in cache
+});
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: async () => {
-    const promises = Promise.all([getBrands(), getLastBlob()]);
-    const [{ brands }, latestBuild] = await promises;
-    return { brands, latestBuild };
-  },
 });
 
 function Home() {
-  const { brands, latestBuild } = Route.useLoaderData();
+  return <HomeContent />;
+}
+
+// Loading skeleton for Latest Build
+function LatestBuildSkeleton() {
+  return (
+    <div className="mt-16 mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-white font-display mb-2">
+          Latest Custom Build
+        </h2>
+        <p className="text-gray-400">Check out our most recent masterpiece</p>
+      </div>
+      <div className="max-w-4xl mx-auto">
+        <Card className="overflow-hidden border-gray-700 bg-gray-800 animate-pulse">
+          <CardContent className="p-0">
+            <div className="w-full h-96 bg-gray-700" />
+            <div className="p-6 space-y-3">
+              <div className="h-6 bg-gray-700 rounded w-3/4" />
+              <div className="h-4 bg-gray-700 rounded w-1/2" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// Component that fetches and displays the latest build
+function LatestBuildSection() {
+  const { data: latestBuild } = useSuspenseQuery(latestBuildQueryOptions);
   const buildData = latestBuild?.metadata?.metadata || {};
 
+  if (!latestBuild?.imageData) {
+    return null;
+  }
+
+  return (
+    <div className="mt-16 mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-white font-display mb-2">
+          Latest Custom Build
+        </h2>
+        <p className="text-gray-400">Check out our most recent masterpiece</p>
+      </div>
+      <LatestBuildDisplay
+        imageData={latestBuild.imageData}
+        buildData={buildData}
+        variant="compact"
+      />
+    </div>
+  );
+}
+
+// Loading skeleton for Brands
+function BrandsSkeleton() {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8">
+      {Array.from({ length: 14 }).map((_, i) => (
+        <div
+          key={i}
+          className="flex items-center justify-center p-4 bg-gray-800 rounded-lg animate-pulse"
+        >
+          <div className="w-24 h-12 bg-gray-700 rounded" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Component that fetches and displays brands
+function BrandsSection() {
+  const { data: brands } = useSuspenseQuery(brandsQueryOptions);
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8">
+      {brands.map((brand) => (
+        <div
+          key={brand.name}
+          className="flex items-center justify-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+        >
+          <img
+            src={brand.imageUrl ?? ""}
+            alt={`${brand.name} logo`}
+            className="max-w-full max-h-12 object-contain"
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HomeContent() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-secondary-800 text-white">
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative container mx-auto px-4 py-24 lg:py-32">
-          <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 font-display">
-              Welcome to{" "}
-              <span className="text-primary animate-pulse">
-                Velo Tech Centre
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-300">
-              Your trusted partner for professional bike services, quality
-              parts, and expert advice in Bronte, NSW
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                asChild
-                size="lg"
-                className="bg-primary hover:bg-primary-400 text-gray-900 glow-primary"
-              >
-                <Link to="/services">Our Services</Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-primary text-primary hover:bg-primary hover:text-gray-900 bg-transparent"
-              >
-                <Link to="/contact">Get In Touch</Link>
-              </Button>
-            </div>
-
-            {/* Latest Build Showcase */}
-            {latestBuild?.imageData && (
-              <div className="mt-16 mx-auto">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white font-display mb-2">
-                    Latest Custom Build
-                  </h2>
-                  <p className="text-gray-400">
-                    Check out our most recent masterpiece
-                  </p>
-                </div>
-                <LatestBuildDisplay
-                  imageData={latestBuild.imageData}
-                  buildData={buildData}
-                  variant="compact"
-                />
+          <div className="max-w-6xl mx-auto text-center relative">
+            <div className="relative z-10">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 font-display">
+                Welcome to{" "}
+                <span className="text-primary animate-pulse">
+                  Velo Tech Centre
+                </span>
+              </h1>
+              <p className="text-xl md:text-2xl mb-8 text-gray-300">
+                Your trusted partner for professional bike services, quality
+                parts, and expert advice in Bronte, NSW
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-primary hover:bg-primary-400 text-gray-900 glow-primary"
+                >
+                  <Link to="/services">Our Services</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-primary text-primary hover:bg-primary hover:text-gray-900 bg-transparent"
+                >
+                  <Link to="/contact">Get In Touch</Link>
+                </Button>
               </div>
-            )}
+
+              {/* Latest Build Showcase with Suspense */}
+              <Suspense fallback={<LatestBuildSkeleton />}>
+                <LatestBuildSection />
+              </Suspense>
+            </div>
           </div>
         </div>
       </section>
@@ -276,20 +371,9 @@ function Home() {
               with the best products and service
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8">
-            {brands.map((brand) => (
-              <div
-                key={brand.name}
-                className="flex items-center justify-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                <img
-                  src={brand.imageUrl ?? ""}
-                  alt={`${brand.name} logo`}
-                  className="max-w-full max-h-12 object-contain"
-                />
-              </div>
-            ))}
-          </div>
+          <Suspense fallback={<BrandsSkeleton />}>
+            <BrandsSection />
+          </Suspense>
         </div>
       </section>
 

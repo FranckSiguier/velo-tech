@@ -5,10 +5,18 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { getCategoriesWithBrands } from "~/functions/getCategories";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/products")({
   component: Products,
+});
+
+// Define query options with aggressive caching for rarely-changing data
+const categoriesWithBrandsQueryOptions = queryOptions({
+  queryKey: ["categoriesWithBrands"],
+  queryFn: () => getCategoriesWithBrands(),
+  staleTime: 1000 * 60 * 60, // 1 hour - products/categories rarely change
+  gcTime: 1000 * 60 * 60 * 24, // 24 hours - keep in cache for a day
 });
 
 // Loading component for Suspense fallback
@@ -104,10 +112,7 @@ function ProductsLoading() {
 
 // Main products content component
 function ProductsContent() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["categoriesWithBrands"],
-    queryFn: () => getCategoriesWithBrands(),
-  });
+  const { data } = useSuspenseQuery(categoriesWithBrandsQueryOptions);
 
   return (
     <>
