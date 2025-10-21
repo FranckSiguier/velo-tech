@@ -10,8 +10,8 @@ export const authMiddleware = createMiddleware({ type: "function" }).server(
         headers: getRequestHeaders(),
       },
     });
-    if (!session) {
-      redirect({
+    if (!session.data) {
+      throw redirect({
         to: "/sign-in",
       });
     }

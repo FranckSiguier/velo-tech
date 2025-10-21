@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { getUserSession } from "~/functions/auth-server-func";
 import { getLastBlob } from "~/functions/getLastBlob";
@@ -6,22 +6,12 @@ import { uploadBuild } from "~/functions/uploadBuild";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { signOut } from "~/utils/auth-client";
 
 export const Route = createFileRoute("/admin/")({
   component: RouteComponent,
-  beforeLoad: async () => {
-    const session = await getUserSession();
-    return {
-      user: session.user,
-    };
-  },
-  loader: async ({ context }) => {
-    if (!context.user) {
-      redirect({
-        to: "/sign-in",
-      });
-    }
-
+  loader: async () => {
+    await getUserSession();
     const { imageData, metadata } = await getLastBlob();
     return {
       imageData,
@@ -31,6 +21,7 @@ export const Route = createFileRoute("/admin/")({
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const { imageData, metadata } = Route.useLoaderData();
   const [file, setFile] = useState<File | null>(null);
   const [frame, setFrame] = useState("");
@@ -39,6 +30,11 @@ function RouteComponent() {
   const [tyres, setTyres] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate({ to: "/" });
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -86,9 +82,6 @@ function RouteComponent() {
           "file-upload"
         ) as HTMLInputElement;
         if (fileInput) fileInput.value = "";
-
-        // Refresh the page
-        window.location.reload();
       }
     } catch (error) {
       setUploadMessage("Error uploading build: " + (error as Error).message);
@@ -103,9 +96,12 @@ function RouteComponent() {
 
   return (
     <div className="container mx-auto p-8 min-h-screen bg-gray-900">
-      <h1 className="text-3xl font-bold mb-8 text-white font-display">
-        Builds Management
-      </h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold  text-white font-display">
+          Builds Management
+        </h1>
+        <Button onClick={handleSignOut}>Sign Out</Button>
+      </div>
 
       {/* Upload Form */}
       <div className="mb-12 bg-gradient-to-br from-gray-800 via-gray-800 to-secondary-800 p-8 rounded-xl shadow-xl border border-gray-700">

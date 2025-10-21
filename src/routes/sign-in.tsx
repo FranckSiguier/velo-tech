@@ -39,13 +39,6 @@ function SignIn() {
     return undefined;
   };
 
-  const { data: session } = useSession();
-  if (session) {
-    redirect({
-      to: "/admin",
-    });
-  }
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -95,10 +88,10 @@ function SignIn() {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await authClient.signIn.email({
+      const { error } = await authClient.signIn.email({
         email: formData.email,
         password: formData.password,
-        callbackURL: "/",
+        callbackURL: "/admin",
       });
 
       if (error) {
