@@ -179,11 +179,11 @@ function About() {
           <h2 className="text-3xl font-bold text-center mb-12 font-display">
             Meet Our Team
           </h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid lg:grid-cols-3  gap-8 max-w-8xl mx-auto">
             <Card className="text-center border-gray-700 bg-gray-800">
               <CardHeader>
                 <img
-                  src="/placeholder.svg?height=200&width=200"
+                  src="/chris.png"
                   alt="Chris Schofield - Founder & Head Mechanic"
                   className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
                 />
@@ -206,7 +206,7 @@ function About() {
             <Card className="text-center border-gray-700 bg-gray-800">
               <CardHeader>
                 <img
-                  src="/placeholder.svg?height=200&width=200"
+                  src="/paul.png"
                   alt="Paul Birtles - Mechanic"
                   className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
                 />
@@ -219,6 +219,27 @@ function About() {
                   mechanic. Been apart of the Sydney road cycling community for
                   over 35 years and have a real passion for all things bikes and
                   helping others experience the same enjoyment of riding.
+                </p>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center border-gray-700 bg-gray-800">
+              <CardHeader>
+                <img
+                  src="/will.png"
+                  alt="Will - Mechanic"
+                  className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+                />
+                <CardTitle className="text-white text-xl font-display">
+                  Will
+                </CardTitle>
+                <p className="text-primary font-semibold">Team Member</p>
+                <p className="text-gray-400">
+                  Will is an active member of the Sydney triathlon community,
+                  taking a particular interest in road and triathlon bikes. With
+                  several years of experience across a variety of bike shops, he
+                  enjoys helping riders fine-tune their setups to get the most
+                  out of every ride.
                 </p>
               </CardHeader>
             </Card>
