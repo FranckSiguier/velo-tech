@@ -6,6 +6,7 @@ import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
 import Footer from "~/components/footer";
 import Navbar from "~/components/navbar";
 import { NotFound } from "~/components/NotFound";
+import { Toaster } from "~/components/ui/toaster";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -66,6 +67,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <Navbar />
           {children}
           <Footer />
+          <Toaster />
           <TanStackRouterDevtools position="bottom-right" />
           <Scripts />
         </QueryClientProvider>
