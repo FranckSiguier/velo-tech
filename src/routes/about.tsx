@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { getTestimonials } from "~/functions/getTestimonials";
 
 export const Route = createFileRoute("/about")({
-  ssr: true,
   component: About,
   loader: async () => await getTestimonials(),
 });
